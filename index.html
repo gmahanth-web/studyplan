@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GATE 2027 Tracker</title>
+<style>
+:root{--bg:#eef1f5;--pn:#fff;--ink:#1b2430;--mu:#5d6b7c;--ln:#d5dce5;--ac:#2f5d9e;--as:#e3ecf8;--ok:#2e7d4f;--os:#e1f3e8;--wn:#b4441f;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#12171e;--pn:#1a212b;--ink:#e6ebf2;--mu:#93a1b3;--ln:#2c3644;--ac:#7fa8e6;--as:#22314a;--ok:#5bc08a;--os:#1c3328;--wn:#e6906a;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+button,input,select{font:inherit;color:inherit}
+input,select{background:var(--pn);border:1px solid var(--ln);border-radius:7px;padding:6px 8px}
+.btn{border:1px solid var(--ln);background:var(--pn);padding:6px 12px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--ac)}.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}.btn.d{color:var(--wn)}
+.mu{color:var(--mu)}.sm{font-size:13px}
+#landing{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:560px;margin:20px auto}
+.pcard{background:var(--pn);border:1px solid var(--ln);border-radius:14px;padding:22px 12px;cursor:pointer}
+.pcard:hover{border-color:var(--ac)}
+.av{width:60px;height:60px;border-radius:50%;background:var(--ac);color:#fff;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.pcard:nth-child(2) .av{background:var(--ok)}
+.pb{width:42px;height:42px;font-size:18px;margin:0;border:0;cursor:pointer;flex:none}
+header{background:var(--pn);border-bottom:1px solid var(--ln);padding:14px 20px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto}
+.row+.row{margin-top:10px}
+.seg button{padding:7px 18px;border:1px solid var(--ln);background:var(--pn);cursor:pointer;font-weight:600}
+.seg button.on,.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.stat b{display:block;font-size:20px;line-height:1.1}.stat span{font-size:12px;color:var(--mu)}
+.stats{display:flex;gap:22px;flex-wrap:wrap}
+.bar{height:7px;border-radius:9px;background:var(--ln);overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.tabs{max-width:1100px;margin:14px auto 0;padding:0 20px;display:flex;gap:6px;flex-wrap:wrap}
+.tab{padding:7px 16px;border:1px solid var(--ln);background:var(--pn);border-radius:8px;cursor:pointer;font-weight:600}
+main{max-width:1100px;margin:14px auto 60px;padding:0 20px}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:14px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:17px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.it{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--ln)}
+.it .gr{flex:1;min-width:0}
+.tag{font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff;min-width:64px;text-align:center}
+.t-r{background:var(--wn)}.t-w{background:var(--ac)}.t-n{background:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chips button{border:1px solid var(--ln);background:var(--pn);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:13px}
+.chips button.on{background:var(--as);border-color:var(--ac);font-weight:700}
+.tc{background:var(--pn);border:1px solid var(--ln);border-left:4px solid var(--ln);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.tc.done{border-left-color:var(--ok);background:var(--os)}
+.tc .ln{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+.tc input[type=number]{width:70px}.tc input.nt{flex:1;min-width:180px}
+.due{background:var(--wn);color:#fff;border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse}td,th{padding:6px;border-top:1px solid var(--ln);text-align:left}
+.tw{overflow-x:auto}
+#toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:8px;width:min(92vw,500px)}
+.toast{background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:12px;font-weight:600;text-align:center}
+.toast.big{background:var(--ok);color:#fff;font-size:17px}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:60;display:none}
+.sync{font-size:12.5px;color:var(--mu)}
+@media(max-width:800px){.g2,.pc{grid-template-columns:1fr}}
+</style></head><body>
+<div id="landing"><div><h1>GATE 2027 Tracker</h1><p class="mu">Who is studying today?</p><div class="pc" id="pcs"></div><div class="sync" id="sync1"></div></div></div>
+<div id="app" hidden>
+<header>
+ <div class="row"><div style="display:flex;gap:12px;align-items:center"><button class="av pb" id="pbtn" onclick="toggleProfile()" title="Profile"></button><h1 id="ttl" style="margin:0;font-size:21px"></h1></div><div class="seg" id="exs"></div></div>
+ <div class="card" id="pmenu" hidden style="max-width:1100px;margin:10px auto 0"><div id="pinfo"></div><div class="sync" id="sync2" style="margin-top:6px"></div><button class="btn d" style="margin-top:8px" onclick="logout()">Log out</button></div>
+ <div class="row"><div class="stats" id="stats"></div></div>
+ <div class="row"><div class="bar" style="flex:1"><i id="ob" style="width:0"></i></div></div>
+</header>
+<div class="tabs" id="tabs"></div>
+<main id="main"></main>
+</div>
+<div id="toasts"></div><canvas id="cf"></canvas>
+<script>
+/* Paste your Firebase web config here. Leave projectId empty for local-only mode. */
+const FB={apiKey:"AIzaSyCzoI0PDfaExFOo32h0M4elPc8x7SFJx4E",authDomain:"studyplanner-ef2c9.firebaseapp.com",projectId:"studyplanner-ef2c9",storageBucket:"studyplanner-ef2c9.firebasestorage.app",messagingSenderId:"704172818138",appId:"1:704172818138:web:9af06e994ab36a4570efe3"};
+const COL="gate2027";
+const PROFILES=[{id:"gautham",name:"Gautham"},{id:"anu",name:"Anu"}];
+const LV=["Not started","Learning","Practicing","Exam ready"], INT=[1,3,7,14];
+const SYL={
+DA:{label:"DA",full:"Data Science and AI",secs:[
+["Probability and Statistics","Counting|Probability Axioms|Types of Events|Marginal, Conditional, Joint Probability|Bayes Theorem|Conditional Expectation and Variance|Descriptive Measures|Correlation and Covariance|Random Variables|Discrete Distributions and PMF|Continuous Distributions and PDF|Sampling Distributions (t, chi-squared)|CDF and Conditional PDF|Central Limit Theorem|Confidence Intervals|Hypothesis Testing"],
+["Linear Algebra","Vector Spaces and Subspaces|Linear Independence|Special Matrices (projection, orthogonal, idempotent)|Block Matrices|Quadratic Forms|Systems of Linear Equations|Gaussian Elimination|Eigenvalues and Eigenvectors|Determinant|Rank and Nullity|Projections|LU Decomposition|Singular Value Decomposition"],
+["Calculus and Optimization","Functions of a Single Variable|Limits|Continuity|Differentiability|Taylor Series|Maxima and Minima|Single-Variable Optimization"],
+["Programming, DSA","Python Programming|Stacks|Queues|Linked Lists|Trees|Hash Tables|Search Algorithms|Basic Sorting|Divide and Conquer|Graph Theory Basics|Basic Graph Algorithms"],
+["Database and Warehousing","ER Model|Relational Model|Relational Algebra|Tuple Calculus|SQL|Integrity Constraints|Normal Forms|File Organization and Indexing|Data Types|Data Transformation|Warehouse Modelling|Concept Hierarchies|Measures"],
+["Machine Learning","Regression vs Classification|Simple Linear Regression|Multiple Linear Regression|Ridge Regression|Logistic Regression|k-Nearest Neighbour|Naive Bayes|Linear Discriminant Analysis|Support Vector Machine|Decision Trees|Bias-Variance Trade-off|Cross-Validation|MLP and Feed-Forward Networks|Clustering (k-means, k-medoid)|Hierarchical Clustering|Dimensionality Reduction|PCA"],
+["Artificial Intelligence","Uninformed Search|Informed Search|Adversarial Search|Propositional Logic|Predicate Logic|Bayesian Networks|Exact Inference|Approximate Inference"]]},
+CS:{label:"CS",full:"Computer Science and IT",secs:[
+["Discrete Mathematics","Propositional and First-Order Logic|Sets, Relations, Functions|Partial Orders and Lattices|Monoids and Groups|Graph Theory|Combinatorics|Recurrence Relations|Generating Functions"],
+["Linear Algebra and Calculus","Matrices and Determinants|Linear Equations and Rank|Eigenvalues and Eigenvectors|LU Decomposition|Limits, Continuity, Differentiability|Maxima and Minima|Mean Value Theorem|Integration"],
+["Probability and Statistics","Random Variables and Distributions|Mean, Median, Mode, SD|Conditional Probability and Bayes"],
+["Digital Logic","Boolean Algebra and Minimization|Combinational Circuits|Sequential Circuits|Number Representation|Floating Point"],
+["Computer Organization","Instruction Set and Addressing|ALU and Control Unit|Memory Hierarchy|Cache Mapping|I/O Interface|Pipelining and Hazards"],
+["Programming and DS","Programming in C|Recursion|Arrays|Stacks and Queues|Linked Lists|Trees and BST|Binary Heaps|Graphs"],
+["Algorithms","Searching and Sorting|Hashing|Asymptotic Complexity|Greedy|Dynamic Programming|Divide and Conquer|Graph Traversals|MST|Shortest Paths"],
+["Theory of Computation","Regular Expressions and Finite Automata|CFG and PDA|Regular and CF Languages|Pumping Lemma|Turing Machines|Undecidability"],
+["Compiler Design","Lexical Analysis|Parsing|Syntax-Directed Translation|Runtime Environments|Intermediate Code|Local Optimisation|Data Flow Analysis"],
+["Operating System","System Calls|Processes and Threads|IPC|Synchronization|Deadlock|Scheduling|Memory Management|Virtual Memory|File Systems"],
+["Databases","ER Model|Relational Algebra and Calculus|SQL|Integrity Constraints|Normal Forms|Indexing and B+ Trees|Transactions|Concurrency Control"],
+["Computer Networks","Layering|Switching and Performance|Error Detection|MAC Protocols|Ethernet|Routing|IPv4, CIDR, NAT|TCP Flow and Congestion|DNS and HTTP"]]}};
+const T={};
+Object.keys(SYL).forEach(k=>{T[k]=[];SYL[k].secs.forEach((s,si)=>{let n=0;s[1].split("|").forEach(nm=>{n++;T[k].push({id:k+si+"_"+n,si,num:(si+1)+"."+n,name:nm})})})});
+
+/* ---------- helpers ---------- */
+const $=i=>document.getElementById(i);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad=n=>(n<10?"0":"")+n, ds=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today=()=>ds(new Date());
+const pd=s=>{const p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ds(d)};
+const diff=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
+const fmt=n=>(Math.round(n*10)/10).toString();
+const ago=t=>{if(!t)return"never";const m=Math.round((Date.now()-t)/6e4);return m<1?"just now":m<60?m+" min ago":m<1440?Math.round(m/60)+" h ago":Math.round(m/1440)+" d ago"};
+
+/* ---------- data ---------- */
+const KEY="gate-2027-tracker-v4";
+let S={exam:"DA",users:{}}, me=null, tab="T", cur=0, loginT=0, storageOK=true;
+const nb=b=>{b=b||{};return{t:b.t||{},papers:Array.isArray(b.papers)?b.papers:[],hours:b.hours||5.5}};
+const np=p=>{p=p||{};const e=p.ex||{};return{u:+p.u||0,ex:{CS:nb(e.CS),DA:nb(e.DA)},log:Array.isArray(p.log)?p.log:[]}};
+try{const r=JSON.parse(localStorage.getItem(KEY)||"null");if(r){if(SYL[r.exam])S.exam=r.exam;Object.keys(r.users||{}).forEach(i=>S.users[i]=np(r.users[i]))}}catch(e){storageOK=false}
+PROFILES.forEach(p=>{if(!S.users[p.id])S.users[p.id]=np(null)});
+const P=()=>S.users[me], B=()=>P().ex[S.exam], nameOf=id=>PROFILES.find(p=>p.id===id).name, other=()=>PROFILES.find(p=>p.id!==me);
+const g=id=>Object.assign({s:0,a:0,c:0,n:"",d:0,rc:0,nx:"",lt:""},B().t[id]);
+function localSave(){try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){storageOK=false;return false}}
+let pushT;
+function touch(){P().u=Date.now();localSave();clearTimeout(pushT);pushT=setTimeout(pushNow,900)}
+
+/* ---------- Firebase sync ---------- */
+let fb=null;const remote={};
+function setSync(s){const t={local:"Saved on this device only (backend not set up)",connecting:"Connecting...",online:"Synced with backend",saving:"Syncing...",error:"Sync problem, saved on this device"}[s];["sync1","sync2"].forEach(i=>$(i).textContent=t)}
+async function initBackend(){
+ if(!FB.projectId){setSync("local");return}
+ setSync("connecting");
+ try{const V="10.12.2";
+  const a=await import("https://www.gstatic.com/firebasejs/"+V+"/firebase-app.js");
+  const f=await import("https://www.gstatic.com/firebasejs/"+V+"/firebase-firestore.js");
+  const app=a.initializeApp(FB);fb={db:f.getFirestore(app),doc:f.doc,setDoc:f.setDoc};
+  PROFILES.forEach(p=>f.onSnapshot(f.doc(fb.db,COL,p.id),s=>onRemote(p.id,s),e=>{console.error(e);setSync("error")}));
+  setSync("online")}catch(e){console.error(e);fb=null;setSync("error")}
+}
+async function pushNow(){
+ if(!fb||!me)return;const p=S.users[me];if(!p.u)return;
+ try{setSync("saving");await fb.setDoc(fb.doc(fb.db,COL,me),{updatedAt:p.u,json:JSON.stringify({ex:p.ex,log:p.log})});setSync("online")}catch(e){console.error(e);setSync("error")}
+}
+function parseRemote(s){if(!s.exists())return null;const d=s.data();try{const j=JSON.parse(d.json);return np({u:d.updatedAt,ex:j.ex,log:j.log})}catch(e){return null}}
+function reconcile(id){
+ const r=remote[id],l=S.users[id];
+ if(r&&r.u>l.u){S.users[id]=np(r);S.users[id].u=r.u;localSave();return true}
+ if(l.u>(r?r.u:0)&&fb&&me===id){clearTimeout(pushT);pushT=setTimeout(pushNow,300)}
+ return false}
+function onRemote(id,snap){
+ const prev=remote[id],rec=parseRemote(snap);remote[id]=rec;
+ if(!me){renderLanding();return}
+ if(id===me){if(reconcile(id))render()}
+ else{
+  if(prev&&rec){const seen=prev.log.reduce((m,e)=>Math.max(m,e.t),0);
+   rec.log.filter(e=>e.t>seen&&e.t>loginT).forEach(e=>toast(nameOf(id)+" just completed "+e.num+" "+e.name+" ("+e.exam+"). Send a cheer!"))}
+  if(tab==="O")render()}
+}
+const src=id=>{const r=remote[id],l=S.users[id];return(r&&r.u>=l.u)?r:l};
+
+/* ---------- toasts and confetti ---------- */
+function toast(m,big){const t=document.createElement("div");t.className="toast"+(big?" big":"");t.textContent=m;$("toasts").append(t);setTimeout(()=>t.remove(),big?8000:4500)}
+let bid=0;
+function burst(n){
+ if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ const c=$("cf"),x=c.getContext("2d"),my=++bid;c.width=innerWidth;c.height=innerHeight;c.style.display="block";
+ const col=["#2f5d9e","#2e7d4f","#e0a526","#d9534f","#8e5bd0"];
+ const ps=Array.from({length:n},()=>({x:innerWidth/2+(Math.random()-.5)*240,y:innerHeight*.6,vx:(Math.random()-.5)*13,vy:-Math.random()*14-4,s:5+Math.random()*6,c:col[Math.random()*5|0]}));
+ let f=0;(function k(){if(my!==bid)return;x.clearRect(0,0,c.width,c.height);
+  ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s*.6)});
+  if(++f<110)requestAnimationFrame(k);else{x.clearRect(0,0,c.width,c.height);c.style.display="none"}})();
+}
+const CH=["You did it, {n}!","Well done, {n}!","Nice work, {n}!","Another one down, {n}!","Topic cleared, {n}. Keep going!"];
+function celebrate(t){
+ const n=nameOf(me),ts=T[S.exam],done=ts.filter(x=>g(x.id).d).length,tot=ts.length;
+ const secDone=ts.filter(x=>x.si===t.si).every(x=>g(x.id).d);
+ const now=Math.floor(done/tot*100),bef=Math.floor((done-1)/tot*100),m=[25,50,75].find(x=>bef<x&&now>=x);
+ let msg,big=true;
+ if(done===tot)msg="Syllabus complete! "+n+", you finished every "+SYL[S.exam].label+" topic.";
+ else if(secDone)msg="Section complete: "+SYL[S.exam].secs[t.si][0]+". You did it, "+n+"!";
+ else if(m)msg=m+"% of "+SYL[S.exam].label+" done. Fantastic, "+n+"!";
+ else{big=false;msg=CH[Math.random()*5|0].replace("{n}",n)+" "+t.num+" "+t.name+" is done."}
+ toast(msg,big);burst(big?220:70);
+}
+
+/* ---------- logic ---------- */
+function setF(id,k,v){
+ const r=g(id);r[k]=v;
+ if(k==="a"&&r.c>r.a)r.c=r.a;
+ if(k==="c"&&r.c>r.a)r.a=r.c;
+ B().t[id]=r;touch();render()}
+function tick(id,on){
+ const t=T[S.exam].find(x=>x.id===id),r=g(id),td=today();
+ r.d=on?1:0;P().log=P().log.filter(e=>!(e.exam===S.exam&&e.id===id));
+ if(on){r.rc=0;r.lt=td;r.nx=addD(td,INT[0]);if(r.s===0)r.s=1;
+  P().log.push({t:Date.now(),exam:S.exam,id,num:t.num,name:t.name});P().log=P().log.slice(-60)}
+ else{r.nx=""}
+ B().t[id]=r;touch();render();if(on)celebrate(t)}
+function revised(id){
+ const r=g(id),td=today();r.rc++;r.lt=td;r.nx=addD(td,INT[Math.min(r.rc,INT.length-1)]*(r.s<=1?1:r.s===3?2:1));
+ B().t[id]=r;touch();render();toast("Revision logged. Next review on "+r.nx+".")}
+function setNext(id,v){if(!v)return;const r=g(id);r.nx=v;B().t[id]=r;touch();render()}
+const due=id=>{const r=g(id);return r.d&&r.nx&&r.nx<=today()};
+function weak(id){
+ const r=g(id),why=[];let sc=0;
+ if(r.a>=3){const acc=r.c/r.a;if(acc<.6){why.push("Accuracy "+Math.round(acc*100)+"% ("+r.c+"/"+r.a+")");sc+=(0.6-acc)*100+20}}
+ if(r.d&&r.s===1){why.push("Marked done but still 'Learning'");sc+=25}
+ if(r.s===1&&!r.d&&r.a>0){why.push("Still learning");sc+=10}
+ if(r.n.trim()){why.push("Note: "+r.n.trim().slice(0,60));sc+=12}
+ if(due(id)&&diff(r.nx,today())>3){why.push("Revision overdue "+diff(r.nx,today())+" days");sc+=15}
+ return{why,sc}}
+function overall(k){
+ const ts=T[k],b=P().ex[k];let d=0,a=0,c=0;
+ ts.forEach(t=>{const r=b.t[t.id];if(r){if(r.d)d++;a+=r.a||0;c+=r.c||0}});
+ return{d,tot:ts.length,a,c}}
+
+/* ---------- render ---------- */
+function stat(v,l){return'<div class="stat"><b>'+v+'</b><span>'+l+'</span></div>'}
+function render(){
+ if(!me)return;
+ const k=S.exam,o=overall(k),pp=B().papers;
+ $("ttl").textContent="GATE 2027 "+SYL[k].label+" Tracker";
+ document.title="GATE 2027 "+SYL[k].label+": "+nameOf(me);
+ renderProfile();
+ $("exs").innerHTML=Object.keys(SYL).map(x=>'<button class="'+(x===k?"on":"")+'" onclick="setExam(\''+x+'\')">'+x+'</button>').join("");
+ const avg=pp.length?pp.reduce((s,p)=>s+p.m/p.t*100,0)/pp.length:null;
+ $("stats").innerHTML=stat(o.d+"/"+o.tot,"Topics done")+stat(o.a?Math.round(o.c/o.a*100)+"%":"-","PYQ accuracy ("+o.c+"/"+o.a+")")+stat(pp.length,"Papers")+stat(avg===null?"-":fmt(avg)+"%","Avg paper score");
+ $("ob").style.width=(o.d/o.tot*100)+"%";
+ const nd=T[k].filter(t=>due(t.id)).length;
+ $("tabs").innerHTML=[["T","Today"+(nd?" ("+nd+")":"")],["S","Syllabus"],["P","Papers"],["O",other().name+"'s progress"]].map(a=>'<button class="tab '+(tab===a[0]?"on":"")+'" onclick="showTab(\''+a[0]+'\')">'+a[1]+'</button>').join("");
+ $("main").innerHTML=tab==="T"?viewToday():tab==="S"?viewSyl():tab==="P"?viewPapers():viewPartner();
+}
+function toggleProfile(){$("pmenu").hidden=!$("pmenu").hidden}
+function renderProfile(){
+ const b=$("pbtn");b.textContent=nameOf(me)[0];b.style.background=me==="anu"?"var(--ok)":"var(--ac)";
+ $("pinfo").innerHTML='<b>'+nameOf(me)+'</b><div class="mu sm">Your progress</div>'+Object.keys(SYL).map(k=>{const o=overall(k);
+  return'<div class="it"><div class="gr">'+SYL[k].label+": "+o.d+"/"+o.tot+" topics, "+(o.a?Math.round(o.c/o.a*100)+"% accuracy":"no PYQ data")+'</div><div class="bar" style="width:110px"><i style="width:'+(o.d/o.tot*100)+'%"></i></div></div>'}).join("")}
+function showTab(t){tab=t;render()}
+function setExam(k){S.exam=k;localSave();cur=0;render()}
+function goTo(id){const t=T[S.exam].find(x=>x.id===id);cur=t.si;tab="S";render();const e=$("t_"+id);if(e)e.scrollIntoView({block:"center"})}
+
+function viewToday(){
+ const k=S.exam,td=today(),ts=T[k],bk=B();
+ const dueL=ts.filter(t=>due(t.id)).sort((a,b)=>g(a.id).nx.localeCompare(g(b.id).nx));
+ const wk=ts.map(t=>({t,w:weak(t.id)})).filter(x=>x.w.why.length).sort((a,b)=>b.w.sc-a.w.sc);
+ const fresh=ts.filter(t=>{const r=g(t.id);return !r.d&&r.s===0&&!r.a});
+ /* planner */
+ let mins=Math.round(bk.hours*60),plan=[];
+ const add=(t,tag,cls,m,why)=>{if(mins>=Math.min(m,20)){const u=Math.min(m,mins);mins-=u;plan.push({t,tag,cls,m:u,why})}};
+ dueL.forEach(t=>add(t,"Revise","t-r",30,"Revision due "+g(t.id).nx));
+ wk.slice(0,6).forEach(x=>{if(!plan.some(p=>p.t.id===x.t.id))add(x.t,"Improve","t-w",45,x.w.why[0])});
+ fresh.slice(0,6).forEach(t=>add(t,"Learn","t-n",60,"New topic"));
+ const used=Math.round(bk.hours*60)-mins;
+ const planH=plan.map(p=>'<div class="it"><span class="tag '+p.cls+'">'+p.tag+'</span><div class="gr"><b>'+p.t.num+'</b> '+esc(p.t.name)+'<div class="mu sm">'+esc(p.why)+'</div></div><span class="mu sm">'+p.m+' min</span><button class="btn sm" onclick="goTo(\''+p.t.id+'\')">Open</button></div>').join("")||'<div class="mu">Nothing planned. Pick a topic in the Syllabus tab.</div>';
+ const dueH=dueL.slice(0,12).map(t=>'<div class="it"><span class="tag t-r">Due</span><div class="gr"><b>'+t.num+'</b> '+esc(t.name)+'<div class="mu sm">'+(diff(g(t.id).nx,td)>0?diff(g(t.id).nx,td)+" days overdue":"Due today")+'</div></div><button class="btn sm p" onclick="revised(\''+t.id+'\')">Revised</button><button class="btn sm" onclick="goTo(\''+t.id+'\')">Open</button></div>').join("")||'<div class="mu">No revisions due. Tick a topic as done and its first revision is set for tomorrow (then 3, 7, 14 days).</div>';
+ const wkH=wk.slice(0,15).map(x=>'<div class="it"><span class="tag t-w">Weak</span><div class="gr"><b>'+x.t.num+'</b> '+esc(x.t.name)+'<div class="mu sm">'+x.w.why.map(esc).join("; ")+'</div></div><button class="btn sm" onclick="goTo(\''+x.t.id+'\')">Open</button></div>').join("")||'<div class="mu">No weak topics yet. Log attempted/correct questions and set confidence on each topic.</div>';
+ const secH=SYL[k].secs.map((s,si)=>{const l=ts.filter(t=>t.si===si);let a=0,c=0,d=0;l.forEach(t=>{const r=g(t.id);a+=r.a;c+=r.c;d+=r.d});
+  return'<div class="it"><div class="gr">'+(si+1)+". "+esc(s[0])+'<div class="mu sm">'+d+"/"+l.length+" done, "+(a?Math.round(c/a*100)+"% accuracy":"no PYQ data")+'</div></div><div class="bar" style="width:110px"><i style="width:'+(a?c/a*100:0)+'%;background:'+(a&&c/a<.6?"var(--wn)":"var(--ac)")+'"></i></div></div>'}).join("");
+ const h=new Date().getHours();
+ return'<h2 style="margin:0 0 4px">'+(h<12?"Good morning":h<17?"Good afternoon":"Good evening")+", "+nameOf(me)+'</h2><p class="mu" style="margin:0 0 12px">'+dueL.length+" revisions due, "+wk.length+" weak topics.</p>"
+ +'<div class="card"><h2>Today\'s study plan</h2><p class="mu sm" style="margin:0 0 6px">Daily target: <input type="number" step="0.5" min="1" max="14" style="width:70px" value="'+bk.hours+'" onchange="setHours(this.value)"> hours. Planned '+used+' of '+Math.round(bk.hours*60)+' min: revisions first, then weak topics, then new topics.</p>'+planH+'</div>'
+ +'<div class="g2"><div><div class="card"><h2>Weak-topic dashboard</h2><p class="mu sm" style="margin:0">Low accuracy (under 60%), low confidence or notes.</p>'+wkH+'</div><div class="card"><h2>Accuracy by section</h2>'+secH+'</div></div><div class="card"><h2>Revision reminders</h2><p class="mu sm" style="margin:0">Gaps grow: 1, 3, 7, 14 days. Exam-ready topics get longer gaps.</p>'+dueH+'</div></div>'}
+function setHours(v){B().hours=Math.max(1,Math.min(14,parseFloat(v)||5.5));touch();render()}
+
+function viewSyl(){
+ const k=S.exam,secs=SYL[k].secs;
+ const chips='<div class="chips">'+secs.map((s,i)=>{const l=T[k].filter(t=>t.si===i);const d=l.filter(t=>g(t.id).d).length;return'<button class="'+(i===cur?"on":"")+'" onclick="cur='+i+';render()">'+(i+1)+". "+esc(s[0])+" ("+d+"/"+l.length+")</button>"}).join("")+"</div>";
+ const list=T[k].filter(t=>t.si===cur).map(t=>{
+  const r=g(t.id),acc=r.a?Math.round(r.c/r.a*100)+"%":"-";
+  return'<div class="tc '+(r.d?"done":"")+'" id="t_'+t.id+'"><label><input type="checkbox" '+(r.d?"checked":"")+' onchange="tick(\''+t.id+'\',this.checked)"> <span class="mu">'+t.num+'</span> <b>'+esc(t.name)+"</b></label> "+(due(t.id)?'<span class="due">Revision due</span>':"")
+  +'<div class="ln"><label class="sm">Confidence <select onchange="setF(\''+t.id+'\',\'s\',+this.value)">'+LV.map((l,i)=>'<option value="'+i+'" '+(r.s===i?"selected":"")+">"+l+"</option>").join("")+'</select></label>'
+  +'<label class="sm">Attempted <input type="number" min="0" value="'+r.a+'" onchange="setF(\''+t.id+'\',\'a\',Math.max(0,parseInt(this.value)||0))"></label>'
+  +'<label class="sm">Correct <input type="number" min="0" value="'+r.c+'" onchange="setF(\''+t.id+'\',\'c\',Math.max(0,parseInt(this.value)||0))"></label>'
+  +'<span class="sm">Accuracy <b>'+acc+"</b> ("+(r.a-r.c)+" wrong)</span></div>"
+  +'<div class="ln"><input class="nt" placeholder="What do I need to improve here?" value="'+esc(r.n)+'" onchange="setF(\''+t.id+'\',\'n\',this.value)">'
+  +(r.d?'<span class="sm">Next revision <input type="date" value="'+r.nx+'" onchange="setNext(\''+t.id+'\',this.value)"></span><button class="btn sm" onclick="revised(\''+t.id+'\')">Revised today</button><span class="mu sm">'+r.rc+"x revised</span>":"")+"</div></div>"}).join("");
+ return chips+list}
+
+function viewPapers(){
+ const pp=B().papers;
+ const rows=pp.map((p,i)=>"<tr><td>"+esc(p.n)+"</td><td>"+(p.d||"-")+"</td><td>"+p.m+" / "+p.t+"</td><td><b>"+fmt(p.m/p.t*100)+"%</b></td><td>"+esc(p.r||"")+'</td><td><button class="btn sm d" onclick="delPaper('+i+')">Delete</button></td></tr>').join("")||'<tr><td colspan="6" class="mu">No papers yet.</td></tr>';
+ return'<div class="card"><h2>Add a PYQ paper</h2><div class="ln" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"><input id="pn" placeholder="Paper name (e.g. GATE DA 2025)"><input id="pdt" type="date"><input id="pm" type="number" step="0.01" placeholder="Marks" style="width:90px"><input id="pt" type="number" step="0.01" value="100" style="width:90px"><input id="pr" placeholder="Remarks" style="flex:1;min-width:160px"><button class="btn p" onclick="addPaper()">Add paper</button></div><div id="perr" class="sm" style="color:var(--wn)"></div></div>'
+ +'<div class="card"><h2>Your papers</h2><div class="tw"><table><thead><tr><th>Paper</th><th>Date</th><th>Marks</th><th>Score</th><th>Remarks</th><th></th></tr></thead><tbody>'+rows+"</tbody></table></div></div>"}
+function addPaper(){
+ const n=$("pn").value.trim(),m=parseFloat($("pm").value),t=parseFloat($("pt").value);
+ if(!n||isNaN(m)||isNaN(t)||t<=0){$("perr").textContent="Enter a name, marks and a total above 0.";return}
+ B().papers.push({n,d:$("pdt").value,m,t,r:$("pr").value.trim()});touch();render()}
+function delPaper(i){if(confirm("Delete this paper?")){B().papers.splice(i,1);touch();render()}}
+
+function viewPartner(){
+ const o=other(),p=src(o.id);
+ let h='<h2 style="margin:0 0 4px">'+o.name+"'s progress</h2><p class=\"mu\" style=\"margin:0 0 12px\">"+(p.u?"Last updated "+ago(p.u)+". Read only.":(fb?o.name+" has not saved anything yet.":"No data yet. Set up the backend to see each other's progress across devices."))+"</p><div class=\"g2\">";
+ Object.keys(SYL).forEach(k=>{
+  const b=p.ex[k],ts=T[k];let d=0,a=0,c=0,w=0;
+  ts.forEach(t=>{const r=b.t[t.id];if(r){if(r.d)d++;a+=r.a||0;c+=r.c||0;if(r.a>=3&&r.c/r.a<.6)w++}});
+  const bars=SYL[k].secs.map((s,si)=>{const l=ts.filter(t=>t.si===si),dn=l.filter(t=>b.t[t.id]&&b.t[t.id].d).length;
+   return'<div class="it"><div class="gr">'+(si+1)+". "+esc(s[0])+'<div class="mu sm">'+dn+"/"+l.length+'</div></div><div class="bar" style="width:110px"><i style="width:'+(dn/l.length*100)+'%"></i></div></div>'}).join("");
+  const avg=b.papers.length?fmt(b.papers.reduce((s,x)=>s+x.m/x.t*100,0)/b.papers.length)+"%":"-";
+  h+='<div class="card"><h2>'+SYL[k].label+": "+SYL[k].full+'</h2><div class="stats" style="margin:8px 0">'+stat(d+"/"+ts.length,"Topics done")+stat(a?Math.round(c/a*100)+"%":"-","PYQ accuracy")+stat(w,"Weak topics")+stat(b.papers.length,"Papers")+stat(avg,"Avg score")+"</div>"+bars+"</div>"});
+ const rec=p.log.slice().sort((a,b)=>b.t-a.t).slice(0,10).map(e=>'<div class="it"><span class="tag t-n">'+e.exam+'</span><div class="gr"><b>'+e.num+"</b> "+esc(e.name)+'</div><span class="mu sm">'+ago(e.t)+"</span></div>").join("")||'<div class="mu">No completed topics yet.</div>';
+ return h+'</div><div class="card"><h2>Recent completions</h2>'+rec+"</div>"}
+
+/* ---------- login ---------- */
+function renderLanding(){
+ $("pcs").innerHTML=PROFILES.map(pr=>{const p=src(pr.id);
+  const l=Object.keys(SYL).map(k=>{let d=0;T[k].forEach(t=>{if(p.ex[k].t[t.id]&&p.ex[k].t[t.id].d)d++});return SYL[k].label+": "+d+"/"+T[k].length}).join(", ");
+  return'<button class="pcard" onclick="login(\''+pr.id+'\')"><div class="av">'+pr.name[0]+"</div><b>"+pr.name+'</b><div class="mu sm">'+l+'</div><div class="mu sm">Last active: '+ago(p.u)+"</div></button>"}).join("")}
+function login(id){me=id;loginT=Date.now();reconcile(id);$("landing").hidden=true;$("app").hidden=false;tab="T";render();scrollTo(0,0)}
+function logout(){localSave();pushNow();me=null;$("pmenu").hidden=true;$("app").hidden=true;$("landing").hidden=false;document.title="GATE 2027 Tracker";renderLanding()}
+window.addEventListener("beforeunload",()=>{if(me)localSave()});
+renderLanding();
+initBackend().then(renderLanding);
+</script></body></html>
